@@ -37,9 +37,9 @@ def nearestFacility(p1, facility_list):
             min = distance
     return min
 
-filename = "test_15k_bez_duplict.xyz"
+filename = "BILO48_5g.xyz"
 xyz = readXYZ(filename)
-
+print (len(xyz))
 tresh = 5  # cena (cost, hranicni hodnota)
 alpha = 9.5  # koeficient
 f_list = []
@@ -47,6 +47,9 @@ f = Facility(xyz[0], 0)  # vlozeni prvni facility do listu
 f_list.append(f)
 
 for i in xyz:
+    if xyz.index(i)%1000 == 0:
+        print (xyz.index(i))
+        
     # vypocet vzdalenosti s kazdou existujici facilitou
     # index_dist_min = dis_list.index(min(dis_list)) index pro nejblizsi facility, zatim se nevyuziva
     g = nearestFacility(i, f_list)
