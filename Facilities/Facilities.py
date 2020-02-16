@@ -47,8 +47,8 @@ f = Facility(xyz[0], 0)  # vlozeni prvni facility do listu
 f_list.append(f)
 
 for i in xyz:
-    if xyz.index(i)%1000 == 0:
-        print (xyz.index(i))
+    if xyz.index(i) % 1000 == 0:
+        print(xyz.index(i))
         
     # vypocet vzdalenosti s kazdou existujici facilitou
     # index_dist_min = dis_list.index(min(dis_list)) index pro nejblizsi facility, zatim se nevyuziva
