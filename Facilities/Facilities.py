@@ -51,7 +51,6 @@ for i in xyz:
         print(xyz.index(i))
         
     # vypocet vzdalenosti s kazdou existujici facilitou
-    # index_dist_min = dis_list.index(min(dis_list)) index pro nejblizsi facility, zatim se nevyuziva
     g = nearestFacility(i, f_list)
     p = np.random.uniform()  # vygenerovani pravdepodobnosti
 
@@ -70,7 +69,7 @@ for i in xyz:
 
 
 
-# vytvoreni csv souboru
+# vytvoreni csv souboru podle nazvu vstupního souboru
 out = open(filename[:-4] + "_test.csv", "w")
 out.write("X")
 out.write(" ")
