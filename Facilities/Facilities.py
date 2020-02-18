@@ -39,7 +39,6 @@ def nearestFacility(p1, facility_list):
 
 filename = "BILO48_5g.xyz"
 xyz = readXYZ(filename)
-print (len(xyz))
 tresh = 5  # cena (cost, hranicni hodnota)
 alpha = 9.5  # koeficient
 f_list = []
@@ -47,6 +46,7 @@ f = Facility(xyz[0], 0)  # vlozeni prvni facility do listu
 f_list.append(f)
 
 for i in xyz:
+    #tiskne kazdy 1000 zpracovanych bodu
     if xyz.index(i) % 1000 == 0:
         print(xyz.index(i))
         
