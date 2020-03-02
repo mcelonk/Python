@@ -41,16 +41,16 @@ def vectorSize(w):
 
 # vypocet nejblizsi facility na zaklade vzdalenosti
 def nearestFacility(p1, facility_list):
-    min = countDist(p1, facility_list[0].c)
-    min = min + 2 * facility_list[0].m
+    min_value = countDist(p1, facility_list[0].c)
+    min_value = min_value + 2 * facility_list[0].m
     for z in facility_list:
         distance = countDist(p1, z.c)
         distance = distance + 2 * z.m
         cross_normal = crossProd(p1, z.c) # vektorovy soucin normal
         cross_normal_size = vectorSize(cross_normal) # velikost vektoru vytvoreneho soucinem
-        if distance < min:
-            min = distance
-    return min
+        if distance < min_value:
+            min_value = distance
+    return min_value
 
 
 
@@ -61,7 +61,7 @@ normals = readXYZ(filename) # nacteni vectoru normaly
 
 
 filename = "test_15k_bez_duplict.xyz"
-xyz = readXYZ(filename)
+xyz = readXYZ(filename) # nacteni bodoveho mracna
 c = np.concatenate((xyz, normals), 1) # concatenate xyz list a list s vektory normal
 c = c.tolist() # prevedeni do normalniho pole
 tresh = 5  # cena (cost, hranicni hodnota)
