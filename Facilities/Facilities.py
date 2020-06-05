@@ -6,7 +6,20 @@ class Facility:
     def __init__(self, c, m):
         self.c = c  # centroid
         self.m = m  # radius
+        self.points = 0
+        self.dist = 0
 
+    def setPoints(self, df_points):
+        self.points = df_points
+
+    def getPoints(self):
+        return self.points
+
+    def setDist(self, df_dist):
+        self.dist = df_dist
+
+    def getDist(self):
+        return self.dist
 
 # nacteni do 2d pole
 def readXYZ(fil):
@@ -30,16 +43,19 @@ def countDist(p1, p2):
 def nearestFacility(p1, facility_list):
     min = countDist(p1, facility_list[0].c)
     min = min + 2 * facility_list[0].m
+    min_facility = facility_list[0]
     for z in facility_list:
         distance = countDist(p1, z.c)
         distance = distance + 2 * z.m
         if distance < min:
             min = distance
-    return min
+            min_facility = z
+    min_facility.setDist(min)
+    return min_facility
 
-filename = "BILO48_5g.xyz"
+filename = "test_15k_bez_duplict.xyz"
 xyz = readXYZ(filename)
-tresh = 5  # cena (cost, hranicni hodnota)
+tresh = 1000000  # cena (cost, hranicni hodnota)
 alpha = 9.5  # koeficient
 f_list = []
 f = Facility(xyz[0], 0)  # vlozeni prvni facility do listu
@@ -51,7 +67,8 @@ for i in xyz:
         print(xyz.index(i))
         
     # vypocet vzdalenosti s kazdou existujici facilitou
-    g = nearestFacility(i, f_list)
+    n_facility = nearestFacility(i, f_list)
+    g = n_facility.getDist() # dostane hodnotu vzdalenosti k nejblizsi facility
     p = np.random.uniform()  # vygenerovani pravdepodobnosti
 
     # rozhodnuti zda ma byt vytvorena nova facility
@@ -66,16 +83,21 @@ for i in xyz:
                 f_list.remove(facility)
 
         f_list.append(f)  # pridani facility do listu
+    # ke kazde facilite zjisti pocet bodu ze ktereho vznikla
+    else:
+        n_facility.setPoints(n_facility.getPoints()+1)
 
 
 
-# vytvoreni csv souboru podle nazvu vstupního souboru
+# vytvoreni csv souboru podle nazvu vstupniho souboru
 out = open(filename[:-4] + "_test.csv", "w")
 out.write("X")
 out.write(" ")
 out.write("Y")
 out.write(" ")
 out.write("Z")
+out.write(" ")
+out.write("Points")
 out.write("\n")
 for k in f_list:
     out.write(str(k.c[0]))
@@ -83,4 +105,6 @@ for k in f_list:
     out.write(str(k.c[1]))
     out.write(" ")
     out.write(str(k.c[2]))
+    out.write(" ")
+    out.write(str(k.points))
     out.write("\n")
