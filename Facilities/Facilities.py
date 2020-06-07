@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import os, sys
 
 
 class Facility:
@@ -53,58 +54,61 @@ def nearestFacility(p1, facility_list):
     min_facility.setDist(min)
     return min_facility
 
-filename = "test_15k_bez_duplict.xyz"
-xyz = readXYZ(filename)
-tresh = 1000000  # cena (cost, hranicni hodnota)
-alpha = 9.5  # koeficient
-f_list = []
-f = Facility(xyz[0], 0)  # vlozeni prvni facility do listu
-f_list.append(f)
+for file in os.listdir("pointcloud"):
+    print(file)
+    filename = file
+    xyz = readXYZ("pointcloud//"+filename)
+    tresh = 3  # cena (cost, hranicni hodnota)
+    alpha = 9.5  # koeficient
+    f_list = []
+    f = Facility(xyz[0], 0)  # vlozeni prvni facility do listu
+    f_list.append(f)
 
-for i in xyz:
-    #tiskne kazdy 1000 zpracovanych bodu
-    if xyz.index(i) % 1000 == 0:
-        print(xyz.index(i))
-        
-    # vypocet vzdalenosti s kazdou existujici facilitou
-    n_facility = nearestFacility(i, f_list)
-    g = n_facility.getDist() # dostane hodnotu vzdalenosti k nejblizsi facility
-    p = np.random.uniform()  # vygenerovani pravdepodobnosti
+    for i in xyz:
+        #tiskne kazdy 1000 zpracovanych bodu
+        if xyz.index(i) % 1000 == 0:
+            print(xyz.index(i))
 
-    # rozhodnuti zda ma byt vytvorena nova facility
-    if p < g / (tresh * alpha):
-        m = (g / (tresh * alpha)) / 6
-        f = Facility(i, m)
+        # vypocet vzdalenosti s kazdou existujici facilitou
+        n_facility = nearestFacility(i, f_list)
+        g = n_facility.getDist() # dostane hodnotu vzdalenosti k nejblizsi facility
+        p = np.random.uniform()  # vygenerovani pravdepodobnosti
 
-        # pokud je nejaka facility prilis blizko, bude odstranena
-        for facility in f_list:
-            dist = countDist(i, facility.c)
-            if dist < facility.m:
-                f_list.remove(facility)
+        # rozhodnuti zda ma byt vytvorena nova facility
+        if p < g / (tresh * alpha):
+            m = (g / (tresh * alpha)) / 6
+            f = Facility(i, m)
 
-        f_list.append(f)  # pridani facility do listu
-    # ke kazde facilite zjisti pocet bodu ze ktereho vznikla
-    else:
-        n_facility.setPoints(n_facility.getPoints()+1)
+            # pokud je nejaka facility prilis blizko, bude odstranena
+            for facility in f_list:
+                dist = countDist(i, facility.c)
+                if dist < facility.m:
+                    f_list.remove(facility)
+
+            f_list.append(f)  # pridani facility do listu
+        # ke kazde facilite zjisti pocet bodu ze ktereho vznikl
+            f.setPoints(f.getPoints() + 1)
+        else:
+            n_facility.setPoints(n_facility.getPoints()+1)
 
 
 
-# vytvoreni csv souboru podle nazvu vstupniho souboru
-out = open(filename[:-4] + "_test.csv", "w")
-out.write("X")
-out.write(" ")
-out.write("Y")
-out.write(" ")
-out.write("Z")
-out.write(" ")
-out.write("Points")
-out.write("\n")
-for k in f_list:
-    out.write(str(k.c[0]))
+    # vytvoreni csv souboru podle nazvu vstupniho souboru
+    out = open(filename[:-4] + "_test.csv", "w")
+    out.write("X")
     out.write(" ")
-    out.write(str(k.c[1]))
+    out.write("Y")
     out.write(" ")
-    out.write(str(k.c[2]))
+    out.write("Z")
     out.write(" ")
-    out.write(str(k.points))
+    out.write("Points")
     out.write("\n")
+    for k in f_list:
+        out.write(str(k.c[0]))
+        out.write(" ")
+        out.write(str(k.c[1]))
+        out.write(" ")
+        out.write(str(k.c[2]))
+        out.write(" ")
+        out.write(str(k.points))
+        out.write("\n")
